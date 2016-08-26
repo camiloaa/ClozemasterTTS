@@ -287,6 +287,4 @@ new MutationObserver(onChange).observe(input_field, {
 	characterData : true
 });
 
-// pre_value = document.getElementsByClassName("pre")[0].innerHTML;
-// post_value = document.getElementsByClassName("post")[0].innerHTML
-// input_value = document.getElementsByClassName("input")[0]
+setTimeout(BingSetup, 1500);
