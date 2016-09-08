@@ -4,7 +4,7 @@
 // @description Add different TTS options to Clozemaster
 // @include     https://www.clozemaster.com/languages*
 // @author      Camilo Arboleda
-// @version     0.1
+// @version     0.2
 // @grant       none
 // ==/UserScript==
 
@@ -256,7 +256,7 @@ function say(sentence, lang) {
 }
 
 function keyUpHandler(e) {
-	if (e.shiftKey && e.keyCode == 32 && audio) {
+	if (e.shiftKey && e.keyCode == 82 && audio) {
 		audio.play();
 	} else {
 		// Nothing happens
