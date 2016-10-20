@@ -4,7 +4,7 @@
 // @description Add different TTS options to Clozemaster
 // @include     https://www.clozemaster.com/languages*
 // @author      Camilo Arboleda
-// @version     0.2
+// @version     0.3
 // @grant       none
 // ==/UserScript==
 
@@ -269,8 +269,8 @@ function onChange() {
 	input_value = document.getElementsByClassName("input")[0].value;
 	
 	if (input_value != "") {
-		pre_value = document.getElementsByClassName("pre")[0].innerHTML;
-		post_value = document.getElementsByClassName("post")[0].innerHTML;
+		pre_value = document.getElementsByClassName("pre")[0].innerText;
+		post_value = document.getElementsByClassName("post")[0].innerText;
 		lang_pair = window.location.pathname.split('/')[2].split('-');
 		console.log("Saying: ", pre_value + input_value + post_value)
 
