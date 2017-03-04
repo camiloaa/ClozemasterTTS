@@ -4,7 +4,9 @@
 // @description Add different TTS options to Clozemaster
 // @include     https://www.clozemaster.com/languages*
 // @author      Camilo Arboleda
-// @version     0.3
+// @version     0.4
+// @downloadURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
+// @updateURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @grant       none
 // ==/UserScript==
 
@@ -18,6 +20,8 @@ ttsEngine['es'] = 'baidu';
 ttsEngine['zh'] = 'baidu';
 ttsEngine['pt'] = 'yandex';
 ttsEngine['pl'] = 'yandex';
+ttsEngine['fr'] = 'yandex';
+ttsEngine['it'] = 'yandex';
 ttsEngine['de'] = 'yandex';
 
 function tryagain() {
@@ -74,7 +78,9 @@ lang3to2['deu'] = 'de';
 lang3to2['eng'] = 'en';
 lang3to2['pol'] = 'pl';
 lang3to2['por'] = 'pt';
+lang3to2['fra'] = 'fr';
 lang3to2['spa'] = 'es';
+lang3to2['ita'] = 'it';
 
 // Google TTS Functions
 // ====================
