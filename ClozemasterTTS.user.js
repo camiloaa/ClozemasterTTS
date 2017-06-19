@@ -4,7 +4,7 @@
 // @description Add different TTS options to Clozemaster
 // @include     https://www.clozemaster.com/languages*
 // @author      Camilo Arboleda
-// @version     0.5
+// @version     0.6
 // @downloadURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @updateURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @grant       none
@@ -56,7 +56,9 @@ function playURL(url) {
 
 	if (audio != null) {
 		// Delete audio element
-		document.body.parentNode.removeChild(audio);
+		console.log("removing audio")
+		parent = audio.parentNode;
+		parent.removeChild(audio);
 	}
 
 	// New audio
@@ -70,20 +72,26 @@ function playURL(url) {
 
 	try {
 		// New play button
-		var button = document.createElement("button");
-		button.className = "btn btn-default";
-		var span = document.createElement("span");
-		span.className = "glyphicon glyphicon-volume-up";
-		button.appendChild(span);
+		var controls=document.getElementsByClassName("controls")[0];
+		var button = document.getElementById("audio-userscript-cm-button");
+		if (button == null) {
+			button = document.createElement("button");
+			button.className = "btn btn-default control";
+			button.setAttribute("id", "audio-userscript-cm-button");
+			var span = document.createElement("span");
+			span.className = "glyphicon glyphicon-volume-up";
+			button.appendChild(span);
+			controls.appendChild(button);
+		}
+
 		button.appendChild(audio);
 		button.onclick = function() {
 			document.getElementById('audio-userscript-cm').play();
 		};
 
 		// Replace cloze-master play button
-		var controls=document.getElementsByClassName("controls")[0];
 		var oldbutton = document.getElementsByClassName("btn btn-default play-sentence-audio control")[0];
-		controls.replaceChild(button, oldbutton);
+		oldbutton.style.display = "none"; // Hide old button if exist
 	} catch(err) {
 		// Unable to replace Clozemaster's button
 		// Just place the audio somewhere and hope for the best
