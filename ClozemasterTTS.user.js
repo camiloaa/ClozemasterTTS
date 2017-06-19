@@ -4,7 +4,7 @@
 // @description Add different TTS options to Clozemaster
 // @include     https://www.clozemaster.com/languages*
 // @author      Camilo Arboleda
-// @version     0.4
+// @version     0.5
 // @downloadURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @updateURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @grant       none
@@ -63,9 +63,9 @@ function playURL(url) {
 	audio.setAttribute("autoplay", "true")
 	source = document.createElement('source');
 	source.setAttribute("type", "audio/mpeg");
+	source.setAttribute("src", url);
 	audio.appendChild(source);
 	document.body.parentNode.insertBefore(audio, document.body);
-	source.setAttribute("src", url);
 
 	audio.load();
 }
@@ -157,11 +157,13 @@ function yandexTTSLang(targetLang) {
 	return undefined;
 };
 
-function yandexSay(sentence, lang) {
+function yandexSay(sentence, lang, speed) {
 	var sayLang = yandexTTSLang(lang);
+	// console.log("Yandex " + sayLang);
 	if (sayLang != undefined) {
-		url = 'http://tts.voicetech.yandex.net/tts?text=' + sentence + '&lang='
-				+ sayLang + '&format=mp3&quality=hi';
+		url = 'http://tts.voicetech.yandex.net/tts?text='
+				+ encodeURIComponent(sentence) + '&lang=' + sayLang
+				+ '&format=mp3&quality=hi';
 		playURL(url);
 		return true;
 	}
@@ -186,16 +188,18 @@ function baiduTTSLang(targetLang) {
 	return undefined;
 };
 
-function baiduSay(sentence, lang) {
+function baiduSay(sentence, lang, speed) {
 	var sayLang = baiduTTSLang(lang);
 	if (sayLang != undefined) {
-		url = 'http://tts.baidu.com/text2audio?text=' + sentence + '&lan='
-				+ sayLang + '&ie=UTF-8';
+		url = 'http://tts.baidu.com/text2audio?text='
+				+ encodeURIComponent(sentence) + '&lan=' + sayLang
+				+ '&ie=UTF-8';
 		playURL(url);
 		return true;
 	}
 	return false;
 }
+
 
 // Setup MS TTS
 tts_req = document.createElement("li");
