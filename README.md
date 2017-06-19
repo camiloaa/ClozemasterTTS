@@ -14,5 +14,5 @@ code in order to configure the script.
  * Chromium: [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en)
  * Firefox: [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
  * Safari: [JavaScript Blocker](http://javascript-blocker.toggleable.com/)
-2. Click [here](https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js) to install the userscript.
+2. Click [here to install the userscript](https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js).
 3. Confirm the installation when prompted.
