@@ -58,14 +58,37 @@ function playURL(url) {
 		// Delete audio element
 		document.body.parentNode.removeChild(audio);
 	}
+
+	// New audio
 	audio = document.createElement('audio');
-	audio.setAttribute("id", "audio-userscript-cm")
-	audio.setAttribute("autoplay", "true")
-	source = document.createElement('source');
+	audio.setAttribute("id", "audio-userscript-cm");
+	audio.setAttribute("autoplay", "true");
+	var source = document.createElement('source');
 	source.setAttribute("type", "audio/mpeg");
 	source.setAttribute("src", url);
 	audio.appendChild(source);
-	document.body.parentNode.insertBefore(audio, document.body);
+
+	try {
+		// New play button
+		var button = document.createElement("button");
+		button.className = "btn btn-default";
+		var span = document.createElement("span");
+		span.className = "glyphicon glyphicon-volume-up";
+		button.appendChild(span);
+		button.appendChild(audio);
+		button.onclick = function() {
+			document.getElementById('audio-userscript-cm').play();
+		};
+
+		// Replace cloze-master play button
+		var controls=document.getElementsByClassName("controls")[0];
+		var oldbutton = document.getElementsByClassName("btn btn-default play-sentence-audio control")[0];
+		controls.replaceChild(button, oldbutton);
+	} catch(err) {
+		// Unable to replace Clozemaster's button
+		// Just place the audio somewhere and hope for the best
+		document.body.parentNode.insertBefore(audio, document.body);
+	}
 
 	audio.load();
 }
