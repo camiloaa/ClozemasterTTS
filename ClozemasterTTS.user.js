@@ -3,8 +3,9 @@
 // @namespace   https://github.com/camiloaa/clozemastertts
 // @description Add different TTS options to Clozemaster
 // @include     https://www.clozemaster.com/languages*
+// @exclude     https://www.clozemaster.com/languages/*/listening
 // @author      Camilo Arboleda
-// @version     0.6
+// @version     0.7.1
 // @downloadURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @updateURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @grant       none
@@ -14,6 +15,12 @@
 // Here comes user configuration!
 // Sorry, no UI yet
 
+var ScriptState = JSON.parse(localStorage.getItem('closetts.state'));
+if (ScriptState == null) {
+	ScriptState = {};  // Empty object
+}
+
+var ENABLE_AUTOPLAY = true;
 var ttsEngine = new Array();
 ttsEngine['en'] = 'baidu';
 ttsEngine['es'] = 'baidu';
@@ -64,7 +71,9 @@ function playURL(url) {
 	// New audio
 	audio = document.createElement('audio');
 	audio.setAttribute("id", "audio-userscript-cm");
-	audio.setAttribute("autoplay", "true");
+	if (ENABLE_AUTOPLAY) {
+		audio.setAttribute("autoplay", "yes");
+	}
 	var source = document.createElement('source');
 	source.setAttribute("type", "audio/mpeg");
 	source.setAttribute("src", url);
@@ -98,7 +107,7 @@ function playURL(url) {
 		document.body.parentNode.insertBefore(audio, document.body);
 	}
 
-	audio.load();
+	// audio.load();
 }
 
 var sentenceGlobal = null;
@@ -116,16 +125,6 @@ lang3to2['ita'] = 'it';
 // Google TTS Functions
 // ====================
 //
-function googleTTSLang(targetLang) {
-	if (targetLang == "dn") {
-		return "nl";
-	}
-	if (targetLang == "zs") {
-		return "zh";
-	}
-	return targetLang;
-}
-
 function googleSay(sentence, lang) {
 
 	// Create Google TTS in a way that it doesn't get tired that quickly.
@@ -134,7 +133,7 @@ function googleSay(sentence, lang) {
 				+ Math.floor(Math.random() * 1000000)
 	};
 	url = "http://translate.google.com/translate_tts?ie=UTF-8&tl="
-			+ googleTTSLang(lang) + "&total=1&textlen=" + sentence.length
+			+ lang + "&total=1&textlen=" + sentence.length
 			+ "&tk=" + gRand() + "&q=" + encodeURIComponent(sentence)
 			+ "&client=tw-ob";
 	if (slow)
@@ -148,42 +147,24 @@ function googleSay(sentence, lang) {
 //
 function yandexTTSLang(targetLang) {
 	switch (targetLang) {
-	case 'ar':
-		return 'ar_AE';
-	case 'ca':
-		return 'ca_ES';
-	case 'cs':
-		return 'cs_CZ';
-	case 'da':
-		return 'da_DK';
-	case 'de':
-		return 'de_DE';
-	case 'el':
-		return 'el_GR';
-	case 'en':
-		return 'en_GB';
-	case 'es':
-		return 'es_ES';
-	case 'fi':
-		return 'fi_FI';
-	case 'fr':
-		return 'fr_FR';
-	case 'it':
-		return 'it_IT';
-	case 'dn':
-		return 'nl_NL';
-	case 'no':
-		return 'no_NO';
-	case 'pl':
-		return 'pl_PL';
-	case 'pt':
-		return 'pt_PT';
-	case 'ru':
-		return 'ru_RU';
-	case 'se':
-		return 'sv_SE';
-	case 'tr':
-		return 'tr_TR';
+	case 'ar': return 'ar_AE';
+	case 'ca': return 'ca_ES';
+	case 'cs': return 'cs_CZ';
+	case 'da': return 'da_DK';
+	case 'de': return 'de_DE';
+	case 'el': return 'el_GR';
+	case 'en': return 'en_GB';
+	case 'es': return 'es_ES';
+	case 'fi': return 'fi_FI';
+	case 'fr': return 'fr_FR';
+	case 'it': return 'it_IT';
+	case 'dn': return 'nl_NL';
+	case 'no': return 'no_NO';
+	case 'pl': return 'pl_PL';
+	case 'pt': return 'pt_PT';
+	case 'ru': return 'ru_RU';
+	case 'se': return 'sv_SE';
+	case 'tr': return 'tr_TR';
 	}
 	return undefined;
 };
@@ -207,14 +188,10 @@ function yandexSay(sentence, lang, speed) {
 // Duolingo to Baidu language codes
 function baiduTTSLang(targetLang) {
 	switch (targetLang) {
-	case 'en':
-		return 'en'; // American English
-	case 'es':
-		return 'es'; // Spanish
-	case 'pt':
-		return 'pt'; // Portuguese
-	case 'zh':
-		return 'zh'; // Chinese
+	case 'en': return 'en'; // American English
+	case 'es': return 'es'; // Spanish
+	case 'pt': return 'pt'; // Portuguese
+	case 'zh': return 'zh'; // Chinese
 	}
 	return undefined;
 };
@@ -232,56 +209,19 @@ function baiduSay(sentence, lang, speed) {
 }
 
 
-// Setup MS TTS
-tts_req = document.createElement("li");
-tts_ans = document.createElement("li");
-
-function ansObserver() {
-	url = tts_ans.getAttribute("data-value");
-	playURL(url);
-}
-
-function BingSetup() {
-	var MutationObserver = window.MutationObserver
-			|| window.WebKitMutationObserver || window.MozMutationObserver;
-	var observerConfig = {
-		attributes : true,
-		childList : true,
-		subree : true,
-	};
-
-	tts_req.setAttribute("type", "hidden");
-	tts_req.setAttribute("id", "bing-tts-request");
-	tts_req.setAttribute("data-value", " ");
-	document.body.appendChild(tts_req);
-
-	tts_ans.setAttribute("type", "hidden");
-	tts_ans.setAttribute("id", "bing-tts-answer");
-	tts_ans.setAttribute("data-value", " ");
-	document.body.appendChild(tts_ans);
-
-	answerObserver = new MutationObserver(ansObserver);
-	answer = document.getElementById("bing-tts-answer");
-	answerObserver.observe(answer, observerConfig);
-}
-
-function bingSay(sentence, lang) {
-	request = document.getElementById("bing-tts-request");
-	url = "language=" + googleTTSLang(lang) + "&text=" + sentence;
-	request.setAttribute("data-value", url);
-	return true;
-}
 
 // List of supported TTS providers
 var sayFunc = new Array();
 sayFunc['baidu'] = baiduSay;
-sayFunc['bing'] = bingSay;
 sayFunc['google'] = googleSay;
 sayFunc['yandex'] = yandexSay;
 // Say a sentence
 function say(sentence, lang) {
 	sentence = sentence.replace(/•/g, "");
 	console.debug("Clozemaster saying '" + sentence + "' in ", lang);
+
+	if (sentenceGlobal == sentence) return;  // Don't repeat sentences
+
 	sentenceGlobal = sentence;
 
 	var url = "";
@@ -306,9 +246,9 @@ function keyUpHandler(e) {
 
 document.addEventListener('keyup', keyUpHandler, false);
 
-function onChange() {
+function onInputChange() {
 	input_value = document.getElementsByClassName("input")[0].value;
-	
+
 	if (input_value != "") {
 		pre_value = document.getElementsByClassName("pre")[0].innerText;
 		post_value = document.getElementsByClassName("post")[0].innerText;
@@ -321,11 +261,30 @@ function onChange() {
 
 input_field = document.getElementsByClassName("input")[0];
 
-new MutationObserver(onChange).observe(input_field, {
+new MutationObserver(onInputChange).observe(input_field, {
 	attributes : true,
 	childList : true,
 	subtree : true,
 	characterData : true
 });
 
-setTimeout(BingSetup, 1500);
+settings_window = document.getElementsByClassName("settings modal")[0];
+
+function onSettingsChange(mutations) {
+    for (var i = 0; i < mutations.length; ++i) {
+        var mutation = mutations[i];
+        var target = mutation.target;
+        // console.log("Changes " + mutation.attributeName);
+        // console.log("Changes " + mutation.oldValue);
+        if (target == settings_window && target) {
+            // console.log("AAA " + target.style["display"]);
+        }
+    }
+}
+
+new MutationObserver(onSettingsChange).observe(settings_window, {
+	attributes : true,
+	attributeOldValue: true
+});
+
+console.log("Closemaster TTS version " + GM_info.script.version);
