@@ -3,9 +3,9 @@
 // @namespace   https://github.com/camiloaa/clozemastertts
 // @description Add different TTS options to Clozemaster
 // @include     https://www.clozemaster.com/languages*
-// @exclude     https://www.clozemaster.com/languages/*/listening
+// @exclude     https://www.clozemaster.com/languages/*skill=listening*
 // @author      Camilo Arboleda
-// @version     0.7.2
+// @version     0.7.3
 // @downloadURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @updateURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @grant       none
