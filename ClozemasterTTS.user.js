@@ -5,7 +5,7 @@
 // @include     https://www.clozemaster.com/languages*
 // @exclude     https://www.clozemaster.com/languages/*/listening
 // @author      Camilo Arboleda
-// @version     0.7.1
+// @version     0.7.2
 // @downloadURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @updateURL  https://github.com/camiloaa/ClozemasterTTS/raw/master/ClozemasterTTS.user.js
 // @grant       none
@@ -25,27 +25,15 @@ var ttsEngine = new Array();
 ttsEngine['en'] = 'baidu';
 ttsEngine['es'] = 'baidu';
 ttsEngine['zh'] = 'baidu';
-ttsEngine['pt'] = 'yandex';
-ttsEngine['pl'] = 'yandex';
-ttsEngine['fr'] = 'yandex';
-ttsEngine['it'] = 'yandex';
-ttsEngine['de'] = 'yandex';
+ttsEngine['pt'] = 'baidu';
+ttsEngine['pl'] = 'google';
+ttsEngine['fr'] = 'google';
+ttsEngine['it'] = 'google';
+ttsEngine['de'] = 'google';
 
 function tryagain() {
 	hideSoundErrorBox();
 	audio.load();
-}
-
-function hideSoundErrorBox() {
-	soundErrorBox.style.display = "none";
-}
-
-function displaySoundErrorBox(url) {
-	var container = document.getElementsByClassName("player-container")[0];
-	container.insertBefore(soundErrorBox, container.firstChild);
-	document.getElementById("sound-error-link").href = url;
-	soundErrorBox.style.display = "";
-	document.getElementById("sound-error-button").onclick = tryagain;
 }
 
 /* Audio functions */
@@ -63,7 +51,7 @@ function playURL(url) {
 
 	if (audio != null) {
 		// Delete audio element
-		console.log("removing audio")
+		// console.log("removing audio")
 		parent = audio.parentNode;
 		parent.removeChild(audio);
 	}
@@ -208,7 +196,19 @@ function baiduSay(sentence, lang, speed) {
 	return false;
 }
 
-
+function googleSay(sentence, lang) {
+    // Create Google TTS in a way that it doesn't get tired that quickly.
+    var gRand = function() {
+        return Math.floor(Math.random() * 1000000) + '|'
+                + Math.floor(Math.random() * 1000000)
+    };
+    url = "http://translate.google.com/translate_tts?ie=UTF-8&tl="
+            + lang + "&total=1&textlen=" + sentence.length
+            + "&tk=" + gRand() + "&q=" + encodeURIComponent(sentence)
+            + "&client=tw-ob";
+    playURL(url, lang);
+    return true;
+}
 
 // List of supported TTS providers
 var sayFunc = new Array();
@@ -230,7 +230,7 @@ function say(sentence, lang) {
 		// console.log("loop " + engine);
 		sayFunc[engine](sentence, lang);
 	} catch (err) {
-		console.log("Unable to speak in " + lang);
+		console.log("Unable to speak in " + lang + ' using ' + engine);
 	}
 
 	lastSaidLang = lang;
@@ -253,7 +253,7 @@ function onInputChange() {
 		pre_value = document.getElementsByClassName("pre")[0].innerText;
 		post_value = document.getElementsByClassName("post")[0].innerText;
 		lang_pair = window.location.pathname.split('/')[2].split('-');
-		console.log("Saying: ", pre_value + input_value + post_value)
+		// console.log("Saying: ", pre_value + input_value + post_value)
 
 		say(pre_value + input_value + post_value, lang3to2[lang_pair[0]]);
 	}
